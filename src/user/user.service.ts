@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { CreateRoleDto } from 'src/roles/dto/create-role-dto';
 import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { User } from './user.model';
@@ -26,6 +27,14 @@ export class UserService {
     return users;
   }
 
+  async getUserById(id: number) {
+    const user = await this.userRepository.findByPk(id, {
+      include: { all: true },
+    });
+
+    return user;
+  }
+
   async getUserByEmail(email: string) {
     const user = await this.userRepository.findOne({
       where: { email },
@@ -33,5 +42,37 @@ export class UserService {
     });
 
     return user;
+  }
+
+  async getUserByUsername(username: string) {
+    const user = await this.userRepository.findOne({
+      where: { username },
+      include: { all: true },
+    });
+
+    return user;
+  }
+
+  async addRole(userId: number, roleData: CreateRoleDto) {
+    const user = await this.getUserById(userId);
+    const role = await this.rolesService.getRole(roleData.name);
+    console.log(role);
+
+    if (!user) {
+      throw new HttpException(
+        'User with this id does not exists',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+    if (!role) {
+      throw new HttpException(
+        'Role with this name does not exists',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    await user.$add('roles', role.id);
+
+    return await this.getUserById(user.id);
   }
 }
