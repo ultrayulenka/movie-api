@@ -9,6 +9,7 @@ import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.model';
+import { LoginUserDto } from './dto/login-user-dto';
 
 @Injectable({})
 export class AuthService {
@@ -17,13 +18,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  test() {
-    return {
-      hello: 'hello',
-    };
-  }
-
-  async login(userData: CreateUserDto) {
+  async login(userData: LoginUserDto) {
     const user = await this.validateUser(userData);
 
     return this.generateToken(user);
@@ -53,20 +48,21 @@ export class AuthService {
     };
   }
 
-  private async validateUser(userData: CreateUserDto) {
-    const user = await this.userService.getUserByEmail(userData.email);
-    if (!user) {
+  private async validateUser(userData: LoginUserDto) {
+    const userByEmail = await this.userService.getUserByEmail(userData.email);
+    if (!userByEmail) {
       throw new HttpException(
         'User with this email does not exists',
         HttpStatus.NOT_FOUND,
       );
     }
+    const user = userByEmail;
     const passwordValid = await bcrypt.compare(
       userData.password,
       user.password,
     );
     if (!passwordValid) {
-      throw new UnauthorizedException('Wrong email or password');
+      throw new UnauthorizedException('Wrong email, username or password');
     }
 
     return user;
