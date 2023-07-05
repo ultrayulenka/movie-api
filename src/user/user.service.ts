@@ -56,7 +56,6 @@ export class UserService {
   async addRole(userId: number, roleData: CreateRoleDto) {
     const user = await this.getUserById(userId);
     const role = await this.rolesService.getRole(roleData.name);
-    console.log(role);
 
     if (!user) {
       throw new HttpException(

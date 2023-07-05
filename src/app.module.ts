@@ -11,6 +11,9 @@ import { UserRoles } from './roles/user-roles.model';
 import { ReviewModule } from './review/review.module';
 import { Review } from './review/review.model';
 import { Movie } from './movie/movie.model';
+import { FilesModule } from './files/files.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import * as path from 'path';
 
 @Module({
   controllers: [],
@@ -32,8 +35,12 @@ import { Movie } from './movie/movie.model';
       models: [User, Role, UserRoles, Review, Movie],
       autoLoadModels: true,
     }),
+    ServeStaticModule.forRoot({
+      rootPath: path.resolve(__dirname, 'static'),
+    }),
     RolesModule,
     ReviewModule,
+    FilesModule,
   ],
 })
 export class AppModule {}

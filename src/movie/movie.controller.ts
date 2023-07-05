@@ -6,7 +6,9 @@ import {
   Param,
   Post,
   Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { Roles } from 'src/auth/roles-auth.decorator';
@@ -16,6 +18,8 @@ import { CreateReviewDto } from 'src/review/dto/create-review-dto';
 import { User } from 'src/user/user.model';
 import { CreateMovieDto } from './dto/create-movie-dto';
 import { MovieService } from './movie.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('movies')
 export class MovieController {
@@ -23,9 +27,13 @@ export class MovieController {
 
   @Roles('CONTRIBUTOR')
   @UseGuards(RolesGuard)
+  @UseInterceptors(FileInterceptor('poster'))
   @Post()
-  create(@Body() movie: CreateMovieDto) {
-    return this.movieService.createMovie(movie);
+  create(
+    @Body() movie: CreateMovieDto,
+    @UploadedFile() poster: Express.Multer.File,
+  ) {
+    return this.movieService.createMovie(movie, poster);
   }
 
   @Roles('CONTRIBUTOR')

@@ -6,6 +6,7 @@ interface MovieCreationAttributes {
   description: string;
   year: number;
   genre: string;
+  poster: string;
 }
 
 @Table({ tableName: 'movies' })
@@ -23,6 +24,9 @@ export class Movie extends Model<Movie, MovieCreationAttributes> {
     allowNull: false,
   })
   name: string;
+
+  @Column({ type: DataType.STRING })
+  poster: string;
 
   @Column({
     type: DataType.STRING,

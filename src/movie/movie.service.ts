@@ -6,17 +6,23 @@ import { ReviewService } from 'src/review/review.service';
 import { User } from 'src/user/user.model';
 import { CreateMovieDto } from './dto/create-movie-dto';
 import { Movie } from './movie.model';
+import { FilesService } from 'src/files/files.service';
 
 @Injectable({})
 export class MovieService {
   constructor(
     @InjectModel(Movie) private movieRepository: typeof Movie,
     private reviewService: ReviewService,
+    private filesService: FilesService,
   ) {}
 
-  async createMovie(dto: CreateMovieDto) {
+  async createMovie(dto: CreateMovieDto, poster: any) {
     const dtoWithRating = { ...dto, rating: 0 };
-    const movie = await this.movieRepository.create(dtoWithRating);
+    const posterFileName = await this.filesService.createFile(poster);
+    const movie = await this.movieRepository.create({
+      ...dtoWithRating,
+      poster: posterFileName,
+    });
 
     return movie;
   }
