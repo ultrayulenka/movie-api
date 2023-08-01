@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { CreateReviewDto } from 'src/review/dto/create-review-dto';
@@ -7,6 +7,7 @@ import { User } from 'src/user/user.model';
 import { CreateMovieDto } from './dto/create-movie-dto';
 import { Movie } from './movie.model';
 import { FilesService } from 'src/files/files.service';
+import { NotFoundException } from 'src/exceptions/exceptions';
 
 @Injectable({})
 export class MovieService {
@@ -31,10 +32,7 @@ export class MovieService {
     const movie = await this.getMovieById(id);
 
     if (!movie) {
-      throw new HttpException(
-        'Movie with this id does not exists',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('Movie');
     }
 
     const posterFileName = await this.getPosterFileName(poster);
@@ -80,10 +78,7 @@ export class MovieService {
     const movie = await this.getMovieById(id);
 
     if (!movie) {
-      throw new HttpException(
-        'Movie with this id does not exist',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('Movie');
     }
 
     return movie;

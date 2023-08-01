@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRoleDto } from 'src/roles/dto/create-role-dto';
 import { RolesService } from 'src/roles/roles.service';
@@ -58,16 +58,10 @@ export class UserService {
     const role = await this.rolesService.getRole(roleData.name);
 
     if (!user) {
-      throw new HttpException(
-        'User with this id does not exists',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('User');
     }
     if (!role) {
-      throw new HttpException(
-        'Role with this name does not exists',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('Role');
     }
 
     await user.$add('roles', role.id);

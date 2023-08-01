@@ -1,15 +1,14 @@
-import {
-  HttpException,
-  HttpStatus,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from 'src/user/dto/create-user-dto';
 import * as bcrypt from 'bcryptjs';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.model';
 import { LoginUserDto } from './dto/login-user-dto';
+import {
+  AlreadyExistsException,
+  NotFoundException,
+} from 'src/exceptions/exceptions';
 
 @Injectable({})
 export class AuthService {
@@ -27,10 +26,7 @@ export class AuthService {
   async signup(userData: CreateUserDto) {
     const userExists = await this.userService.getUserByEmail(userData.email);
     if (userExists) {
-      throw new HttpException(
-        'User with this email already exists',
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new AlreadyExistsException('User');
     }
     const hashPassword = await bcrypt.hash(userData.password, 5);
     const user = await this.userService.createUser({
@@ -51,10 +47,7 @@ export class AuthService {
   private async validateUser(userData: LoginUserDto) {
     const userByEmail = await this.userService.getUserByEmail(userData.email);
     if (!userByEmail) {
-      throw new HttpException(
-        'User with this email does not exists',
-        HttpStatus.NOT_FOUND,
-      );
+      throw new NotFoundException('User');
     }
     const user = userByEmail;
     const passwordValid = await bcrypt.compare(

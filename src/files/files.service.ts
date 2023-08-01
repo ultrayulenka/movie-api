@@ -1,7 +1,8 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as path from 'path';
 import * as fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
+import { UndefinedServerErrorException } from 'src/exceptions/exceptions';
 
 @Injectable()
 export class FilesService {
@@ -15,10 +16,7 @@ export class FilesService {
       fs.writeFileSync(path.join(filePath, fileName), file.buffer);
       return fileName;
     } catch (error) {
-      throw new HttpException(
-        'Error occured on file creation',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      throw new UndefinedServerErrorException('on file creation');
     }
   }
 }
