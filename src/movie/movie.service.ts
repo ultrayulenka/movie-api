@@ -18,13 +18,38 @@ export class MovieService {
 
   async createMovie(dto: CreateMovieDto, poster: any) {
     const dtoWithRating = { ...dto, rating: 0 };
-    const posterFileName = await this.filesService.createFile(poster);
+    const posterFileName = await this.getPosterFileName(poster);
     const movie = await this.movieRepository.create({
       ...dtoWithRating,
       poster: posterFileName,
     });
 
     return movie;
+  }
+
+  async updateMovie(id: number, dto: Partial<CreateMovieDto>, poster: any) {
+    const movie = await this.getMovieById(id);
+
+    if (!movie) {
+      throw new HttpException(
+        'Movie with this id does not exists',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const posterFileName = await this.getPosterFileName(poster);
+
+    await movie.update({
+      ...movie,
+      ...dto,
+      poster: posterFileName || movie.poster,
+    });
+
+    return await this.getMovieById(id);
+  }
+
+  private async getPosterFileName(poster: any): Promise<string> | null {
+    return poster ? await this.filesService.createFile(poster) : null;
   }
 
   async deleteMovie(id: number) {

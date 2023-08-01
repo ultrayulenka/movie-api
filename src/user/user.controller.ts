@@ -3,8 +3,8 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
-  Put,
   UseGuards,
 } from '@nestjs/common';
 import { Roles } from 'src/auth/roles-auth.decorator';
@@ -29,7 +29,7 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
-  @Put('/:id')
+  @Patch('/:id')
   @Roles('ADMIN')
   @UseGuards(RolesGuard)
   addRole(@Param('id') id: number, @Body() role: CreateRoleDto) {

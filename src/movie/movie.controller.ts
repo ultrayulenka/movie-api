@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UploadedFile,
@@ -31,9 +32,21 @@ export class MovieController {
   @Post()
   create(
     @Body() movie: CreateMovieDto,
-    @UploadedFile() poster: Express.Multer.File,
+    @UploadedFile() poster?: Express.Multer.File,
   ) {
     return this.movieService.createMovie(movie, poster);
+  }
+
+  @Roles('CONTRIBUTOR')
+  @UseGuards(RolesGuard)
+  @UseInterceptors(FileInterceptor('poster'))
+  @Patch('/:id')
+  update(
+    @Param('id') id: number,
+    @Body() movie: Partial<CreateMovieDto>,
+    @UploadedFile() poster?: Express.Multer.File,
+  ) {
+    return this.movieService.updateMovie(id, movie, poster);
   }
 
   @Roles('CONTRIBUTOR')
