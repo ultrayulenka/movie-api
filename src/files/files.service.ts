@@ -10,13 +10,23 @@ export class FilesService {
     try {
       const fileName = uuidv4() + '.jpg';
       const filePath = path.resolve(__dirname, '..', 'static');
-      if (!fs.existsSync(filePath)) {
-        fs.mkdirSync(filePath, { recursive: true });
+      const isFileAlreadyExists = this.fileExists(filePath);
+      if (isFileAlreadyExists) {
+        await fs.promises.mkdir(filePath, { recursive: true });
       }
-      fs.writeFileSync(path.join(filePath, fileName), file.buffer);
+      fs.promises.writeFile(path.join(filePath, fileName), file.buffer);
       return fileName;
     } catch (error) {
       throw new UndefinedServerErrorException('on file creation');
+    }
+  }
+
+  private async fileExists(path: string): Promise<boolean> {
+    try {
+      await fs.promises.access(path);
+      return true;
+    } catch {
+      return false;
     }
   }
 }
