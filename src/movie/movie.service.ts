@@ -9,7 +9,7 @@ import { Movie } from './movie.model';
 import { FilesService } from 'src/files/files.service';
 import { NotFoundException } from 'src/exceptions/exceptions';
 
-@Injectable({})
+@Injectable()
 export class MovieService {
   constructor(
     @InjectModel(Movie) private movieRepository: typeof Movie,

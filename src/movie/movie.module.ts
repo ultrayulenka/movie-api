@@ -17,6 +17,5 @@ import { FilesModule } from 'src/files/files.module';
     AuthModule,
     FilesModule,
   ],
-  exports: [MovieService],
 })
 export class MovieModule {}
