@@ -20,13 +20,14 @@ export class FilesService {
     }
   }
 
-  private async fileExists(path: string): Promise<boolean> {
-    //Promise resolve, reject - переделать
-    try {
-      await fs.promises.access(path);
-      return true;
-    } catch {
-      return false;
-    }
+  private fileExists(path: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      fs.promises
+        .access(path)
+        .then(() => resolve(true))
+        .catch((err) => {
+          reject(err);
+        });
+    });
   }
 }
