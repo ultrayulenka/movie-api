@@ -7,7 +7,7 @@ import { User } from 'src/user/user.model';
 import { CreateMovieDto } from './dto/create-movie-dto';
 import { Movie } from './movie.model';
 import { FilesService } from 'src/files/files.service';
-import { NotFoundException } from 'src/exceptions/exceptions';
+import Exception from 'src/exceptions/exceptions';
 
 @Injectable()
 export class MovieService {
@@ -32,7 +32,7 @@ export class MovieService {
     const movie = await this.getMovieById(id);
 
     if (!movie) {
-      throw new NotFoundException('Movie');
+      throw new Exception.NotFoundException('Movie');
     }
 
     const posterFileName = await this.getPosterFileName(poster);
@@ -78,7 +78,7 @@ export class MovieService {
     const movie = await this.getMovieById(id);
 
     if (!movie) {
-      throw new NotFoundException('Movie');
+      throw new Exception.NotFoundException('Movie');
     }
 
     return movie;

@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { CreateRoleDto } from 'src/roles/dto/create-role-dto';
 import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { User } from './user.model';
+import Exception from 'src/exceptions/exceptions';
 
 @Injectable({})
 export class UserService {
@@ -58,10 +59,10 @@ export class UserService {
     const role = await this.rolesService.getRole(roleData.name);
 
     if (!user) {
-      throw new NotFoundException('User');
+      throw new Exception.NotFoundException('User');
     }
     if (!role) {
-      throw new NotFoundException('Role');
+      throw new Exception.NotFoundException('Role');
     }
 
     await user.$add('roles', role.id);

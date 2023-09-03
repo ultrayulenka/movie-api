@@ -5,10 +5,7 @@ import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/user.model';
 import { LoginUserDto } from './dto/login-user-dto';
-import {
-  AlreadyExistsException,
-  NotFoundException,
-} from 'src/exceptions/exceptions';
+import Exception from 'src/exceptions/exceptions';
 
 @Injectable({})
 export class AuthService {
@@ -26,7 +23,7 @@ export class AuthService {
   async signup(userData: CreateUserDto) {
     const userExists = await this.userService.getUserByEmail(userData.email);
     if (userExists) {
-      throw new AlreadyExistsException('User');
+      throw new Exception.AlreadyExistsException('User');
     }
     const hashPassword = await bcrypt.hash(userData.password, 5);
     const user = await this.userService.createUser({
@@ -47,7 +44,7 @@ export class AuthService {
   private async validateUser(userData: LoginUserDto) {
     const userByEmail = await this.userService.getUserByEmail(userData.email);
     if (!userByEmail) {
-      throw new NotFoundException('User');
+      throw new Exception.NotFoundException('User');
     }
     const user = userByEmail;
     const passwordValid = await bcrypt.compare(
