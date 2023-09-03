@@ -5,6 +5,16 @@ import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from './dto/create-user-dto';
 import { User } from './user.model';
 import Exception from 'src/exceptions/exceptions';
+import { RoleName } from 'src/roles/roles.model';
+
+type AvailablePermissions =
+  | 'view movies'
+  | 'create movies'
+  | 'edit movies'
+  | 'delete movies'
+  | 'view user'
+  | 'edit user';
+type UserData = Partial<User> & { permissions: Array<AvailablePermissions> };
 
 @Injectable({})
 export class UserService {
@@ -12,6 +22,12 @@ export class UserService {
     @InjectModel(User) private userRepository: typeof User,
     private rolesService: RolesService,
   ) {}
+
+  permissions: Record<RoleName, Array<AvailablePermissions>> = {
+    USER: ['view movies'],
+    CONTRIBUTOR: ['create movies', 'edit movies', 'delete movies'],
+    ADMIN: ['view user', 'edit user'],
+  };
 
   async createUser(dto: CreateUserDto) {
     const user = await this.userRepository.create(dto);
@@ -22,36 +38,36 @@ export class UserService {
     return user;
   }
 
-  async getAllUsers() {
+  async getAllUsers(): Promise<UserData[]> {
     const users = await this.userRepository.findAll({ include: { all: true } });
 
-    return users;
+    return users.map(this.transfromUserData);
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: number): Promise<UserData> {
     const user = await this.userRepository.findByPk(id, {
       include: { all: true },
     });
 
-    return user;
+    return this.transfromUserData(user);
   }
 
-  async getUserByEmail(email: string) {
+  async getUserByEmail(email: string): Promise<UserData> {
     const user = await this.userRepository.findOne({
       where: { email },
       include: { all: true },
     });
 
-    return user;
+    return this.transfromUserData(user);
   }
 
-  async getUserByUsername(username: string) {
+  async getUserByUsername(username: string): Promise<UserData> {
     const user = await this.userRepository.findOne({
       where: { username },
       include: { all: true },
     });
 
-    return user;
+    return this.transfromUserData(user);
   }
 
   async addRole(userId: number, roleData: CreateRoleDto) {
@@ -68,5 +84,15 @@ export class UserService {
     await user.$add('roles', role.id);
 
     return await this.getUserById(user.id);
+  }
+
+  transfromUserData(user: User): UserData {
+    return {
+      ...user,
+      permissions: [
+        ...user.roles.flatMap((role) => this.permissions[role.name]),
+      ],
+      roles: undefined,
+    };
   }
 }

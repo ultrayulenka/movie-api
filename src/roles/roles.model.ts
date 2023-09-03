@@ -12,6 +12,8 @@ interface RoleCreationAttributes {
   name: string;
 }
 
+export type RoleName = 'ADMIN' | 'CONTRIBUTOR' | 'USER';
+
 @Table({ tableName: 'roles' })
 export class Role extends Model<Role, RoleCreationAttributes> {
   @Column({
@@ -27,7 +29,7 @@ export class Role extends Model<Role, RoleCreationAttributes> {
     unique: true,
     allowNull: false,
   })
-  name: string;
+  name: RoleName;
 
   @BelongsToMany(() => User, () => UserRoles)
   users: User[];
