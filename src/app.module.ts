@@ -13,6 +13,7 @@ import { Review } from './review/review.model';
 import { Movie } from './movie/movie.model';
 import { FilesModule } from './files/files.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { ChatModule } from './chat/chat.module';
 import * as path from 'path';
 
 @Module({
@@ -41,6 +42,7 @@ import * as path from 'path';
     RolesModule,
     ReviewModule,
     FilesModule,
+    ChatModule,
   ],
 })
 export class AppModule {}
