@@ -57,4 +57,18 @@ export class AuthService {
 
     return user;
   }
+
+  validateAuthHeader(authHeader: string) {
+    if (!authHeader) return null;
+
+    const [bearer, token] = authHeader.split(' ');
+
+    if (bearer !== 'Bearer' || !token) {
+      throw new UnauthorizedException({ message: 'User is unauthorized' });
+    }
+
+    const user = this.jwtService.verify<User>(token);
+
+    return user;
+  }
 }
