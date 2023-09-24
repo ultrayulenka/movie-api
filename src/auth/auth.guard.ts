@@ -7,49 +7,44 @@ import {
 import { Observable } from 'rxjs';
 import { User } from 'src/user/user.model';
 import { Socket } from 'socket.io';
-import { WsException } from '@nestjs/websockets';
 import { AuthService } from './auth.service';
 
-@Injectable()
-class AuthGuard implements CanActivate {
+class CommonAuthGuard {
   constructor(private authService: AuthService) {}
 
-  canActivate(
-    context: ExecutionContext,
+  handleRequest(
+    client: any,
+    authHeader: string,
   ): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest();
-
     try {
-      const authHeader = req.headers.authorization;
       const user = this.authService.validateAuthHeader(authHeader);
 
-      req.user = user;
+      client.user = user;
       return true;
     } catch (error) {
       throw new UnauthorizedException({ message: 'User is unauthorized' });
     }
   }
 }
+@Injectable()
+class AuthGuard extends CommonAuthGuard implements CanActivate {
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const req = context.switchToHttp().getRequest();
+
+    return super.handleRequest(req, req.headers.authorization);
+  }
+}
 
 @Injectable()
-class WsAuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
-
+class WsAuthGuard extends CommonAuthGuard implements CanActivate {
   canActivate(
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const socket = context.switchToWs().getClient<Socket & { user: User }>();
 
-    try {
-      const authHeader = socket.handshake.headers.authorization;
-      const user = this.authService.validateAuthHeader(authHeader);
-
-      socket.user = user;
-
-      return true;
-    } catch (error) {
-      throw new WsException({ message: 'User is unauthorized' });
-    }
+    return super.handleRequest(socket, socket.handshake.headers.authorization);
   }
 }
 
