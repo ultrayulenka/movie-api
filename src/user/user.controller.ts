@@ -7,7 +7,6 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateRoleDto } from 'src/roles/dto/create-role-dto';
 import { CreateUserDto } from './dto/create-user-dto';
@@ -22,7 +21,6 @@ export class UserController {
     return this.userService.createUser(user);
   }
 
-  @Roles('ADMIN')
   @UseGuards(RolesGuard)
   @Get()
   getAll() {
@@ -30,7 +28,6 @@ export class UserController {
   }
 
   @Patch('/:id')
-  @Roles('ADMIN')
   @UseGuards(RolesGuard)
   addRole(@Param('id') id: number, @Body() role: CreateRoleDto) {
     return this.userService.addRole(id, role);
