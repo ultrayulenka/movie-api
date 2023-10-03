@@ -1,23 +1,31 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { User } from 'src/user/user.model';
 import { Socket } from 'socket.io';
 import { AuthService } from './auth.service';
 
 class CommonAuthGuard {
-  constructor(private authService: AuthService) {}
+  constructor(@Inject(AuthService) private authService: AuthService) {}
 
   handleRequest(
     client: any,
     authHeader: string,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
+      console.log('this.authService', this.authService);
+
       const user = this.authService.validateAuthHeader(authHeader);
 
       client.user = user;
       return true;
     } catch (error) {
-      //throw new UnauthorizedException({ message: 'User is unauthorized' });
+      throw new UnauthorizedException({ message: 'User is unauthorized' });
     }
   }
 }
@@ -38,9 +46,6 @@ class WsAuthGuard extends CommonAuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const socket = context.switchToWs().getClient<Socket & { user: User }>();
-
-    console.log(socket.handshake.headers.authorization);
-    console.log(socket.handshake);
 
     return super.handleRequest(socket, socket.handshake.headers.authorization);
   }
