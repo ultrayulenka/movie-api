@@ -59,6 +59,7 @@ export class AuthService {
   }
 
   validateAuthHeader(authHeader: string) {
+    console.log('here', authHeader);
     if (!authHeader) return null;
 
     const [bearer, token] = authHeader.split(' ');
