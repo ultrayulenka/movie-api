@@ -44,6 +44,9 @@ class WsAuthGuard extends CommonAuthGuard implements CanActivate {
   ): boolean | Promise<boolean> | Observable<boolean> {
     const socket = context.switchToWs().getClient<Socket & { user: User }>();
 
+    console.log(socket.handshake.headers.authorization);
+    console.log(socket.handshake);
+
     return super.handleRequest(socket, socket.handshake.headers.authorization);
   }
 }
