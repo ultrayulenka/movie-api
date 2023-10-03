@@ -63,11 +63,16 @@ export class AuthService {
 
     const [bearer, token] = authHeader.split(' ');
 
+    console.log(bearer !== 'Bearer');
+    console.log(token);
+
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException({ message: 'User is unauthorized' });
     }
 
     const user = this.jwtService.verify<User>(token);
+
+    console.log(user);
 
     return user;
   }

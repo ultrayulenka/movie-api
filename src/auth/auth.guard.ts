@@ -1,9 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { User } from 'src/user/user.model';
 import { Socket } from 'socket.io';
@@ -22,7 +17,7 @@ class CommonAuthGuard {
       client.user = user;
       return true;
     } catch (error) {
-      throw new UnauthorizedException({ message: 'User is unauthorized' });
+      //throw new UnauthorizedException({ message: 'User is unauthorized' });
     }
   }
 }
