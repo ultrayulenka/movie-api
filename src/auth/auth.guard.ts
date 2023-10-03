@@ -18,8 +18,6 @@ class CommonAuthGuard {
     authHeader: string,
   ): boolean | Promise<boolean> | Observable<boolean> {
     try {
-      console.log('this.authService', this.authService);
-
       const user = this.authService.validateAuthHeader(authHeader);
 
       client.user = user;

@@ -24,8 +24,6 @@ export class ChatGateway implements OnModuleInit {
   @UseGuards(WsAuthGuard)
   @SubscribeMessage('send_message')
   listenForMessages(@MessageBody() data: string, @UserParam() user: User) {
-    console.log('listenForMessages');
-
     this.server.sockets.emit('receive_message', {
       msg: 'New Message',
       content: `${user?.username || user?.email || 'Guest'}: ${data}`,
