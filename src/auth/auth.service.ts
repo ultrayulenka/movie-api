@@ -33,6 +33,13 @@ export class AuthService {
     return this.generateToken(user);
   }
 
+  tokenLogin(user: User | null) {
+    if (!user) {
+      throw new Exception.NotFoundException('User');
+    }
+    return this.userService.transfromUserData(user);
+  }
+
   private async generateToken(user: User) {
     const payload = { email: user.email, roles: user.roles, id: user.id };
 

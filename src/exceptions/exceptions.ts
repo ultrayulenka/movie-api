@@ -6,7 +6,7 @@ type Entity = 'Movie' | 'User' | 'Role';
 namespace Exception {
   export class NotFoundException extends HttpException {
     constructor(entity: Entity) {
-      const message = `${entity} with this email already exists`;
+      const message = `${entity} with this details was not found`;
 
       super(message, HttpStatus.NOT_FOUND);
     }
