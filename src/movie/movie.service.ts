@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
-import { CreateReviewDto } from 'src/review/dto/create-review-dto';
+import { CreateReviewDto } from 'src/review/dto/create-review.dto';
 import { ReviewService } from 'src/review/review.service';
 import { User } from 'src/user/user.model';
-import { CreateMovieDto } from './dto/create-movie-dto';
+import { CreateMovieDto } from './dto/create-movie.dto';
 import { Movie } from './movie.model';
 import { FilesService } from 'src/files/files.service';
 import Exception from 'src/exceptions/exceptions';

@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BelongsToMany,
   Column,
@@ -24,6 +25,7 @@ export class User extends Model<User, UserCreationAttributes> {
     autoIncrement: true,
     primaryKey: true,
   })
+  @ApiProperty()
   id: number;
 
   @Column({
@@ -31,12 +33,14 @@ export class User extends Model<User, UserCreationAttributes> {
     unique: true,
     allowNull: false,
   })
+  @ApiProperty()
   email: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
+  @ApiProperty()
   password: string;
 
   @Column({
@@ -44,11 +48,13 @@ export class User extends Model<User, UserCreationAttributes> {
     unique: true,
     allowNull: false,
   })
+  @ApiProperty()
   username: string;
 
   @BelongsToMany(() => Role, () => UserRoles)
   roles: Role[];
 
   @HasMany(() => Review)
+  @ApiProperty({ type: () => [Review] })
   reviews: Review[];
 }

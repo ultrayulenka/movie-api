@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { HasMany, Column, DataType, Model, Table } from 'sequelize-typescript';
 import { Review } from 'src/review/review.model';
 
@@ -17,41 +18,49 @@ export class Movie extends Model<Movie, MovieCreationAttributes> {
     autoIncrement: true,
     primaryKey: true,
   })
+  @ApiProperty()
   id: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
+  @ApiProperty()
   name: string;
 
   @Column({ type: DataType.STRING })
+  @ApiProperty()
   poster: string;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
+  @ApiProperty()
   description: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
+  @ApiProperty()
   year: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
+  @ApiProperty()
   genre: string;
 
   @Column({
     type: DataType.FLOAT,
     allowNull: false,
   })
+  @ApiProperty()
   rating: number;
 
   @HasMany(() => Review)
+  @ApiProperty({ type: () => [Review] })
   reviews: Review[];
 }

@@ -7,7 +7,7 @@ import {
 } from 'sequelize-typescript';
 import { User } from 'src/user/user.model';
 import { Role } from './roles.model';
-
+import { ApiProperty } from '@nestjs/swagger';
 @Table({ tableName: 'userRoles', createdAt: false, updatedAt: false })
 export class UserRoles extends Model<UserRoles> {
   @Column({
@@ -16,6 +16,7 @@ export class UserRoles extends Model<UserRoles> {
     autoIncrement: true,
     primaryKey: true,
   })
+  @ApiProperty()
   id: number;
 
   @ForeignKey(() => User)
@@ -24,6 +25,7 @@ export class UserRoles extends Model<UserRoles> {
     unique: true,
     allowNull: false,
   })
+  @ApiProperty()
   userId: number;
 
   @ForeignKey(() => Role)
@@ -32,5 +34,6 @@ export class UserRoles extends Model<UserRoles> {
     unique: true,
     allowNull: false,
   })
+  @ApiProperty()
   roleId: number;
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { Movie } from 'src/movie/movie.model';
 import { User } from 'src/user/user.model';
-import { CreateReviewDto } from './dto/create-review-dto';
+import { CreateReviewDto } from './dto/create-review.dto';
 import { Review } from './review.model';
 
 @Injectable({})

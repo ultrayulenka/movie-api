@@ -1,19 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
-import { CreateRoleDto } from 'src/roles/dto/create-role-dto';
+import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
 import { RolesService } from 'src/roles/roles.service';
-import { CreateUserDto } from './dto/create-user-dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './user.model';
 import Exception from 'src/exceptions/exceptions';
 import { RoleName } from 'src/roles/roles.model';
-
-type AvailablePermissions =
-  | 'view movies'
-  | 'create movies'
-  | 'edit movies'
-  | 'delete movies'
-  | 'view user'
-  | 'edit user';
+import { AvailablePermissions } from 'src/schemas';
 
 type UserData = {
   id: number;
@@ -98,7 +91,7 @@ export class UserService {
 
     await user.$add('roles', role.id);
 
-    return await this.getUserById(user.id);
+    return this.transfromUserData(await this.getUserById(user.id));
   }
 
   transfromUserData(user: User): UserData {

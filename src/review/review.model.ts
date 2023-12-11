@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   BelongsTo,
   Column,
@@ -24,26 +25,31 @@ export class Review extends Model<Review, ReviewCreationAttributes> {
     autoIncrement: true,
     primaryKey: true,
   })
+  @ApiProperty()
   id: number;
 
   @Column({
     type: DataType.STRING,
     allowNull: false,
   })
+  @ApiProperty()
   text: string;
 
   @Column({
     type: DataType.INTEGER,
     allowNull: false,
   })
+  @ApiProperty()
   rate: number;
 
   @ForeignKey(() => Movie)
   @Column({ type: DataType.INTEGER })
+  @ApiProperty()
   movieId: number;
 
   @ForeignKey(() => User)
   @Column({ type: DataType.INTEGER })
+  @ApiProperty()
   userId: number;
 
   @BelongsTo(() => Movie)
