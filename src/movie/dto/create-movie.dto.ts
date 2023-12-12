@@ -1,5 +1,6 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
 import { IsNotEmpty, IsString, IsInt, Min, Max } from 'class-validator';
+import { Express } from 'express';
 
 const currentYear = new Date().getFullYear();
 
