@@ -53,6 +53,10 @@ export class MovieService {
   async deleteMovie(id: number) {
     const movie = await this.getMovieById(id);
 
+    if (!movie) {
+      throw new Exception.NotFoundException('Movie');
+    }
+
     await movie.destroy();
 
     return movie;
@@ -70,6 +74,10 @@ export class MovieService {
     const movie = await this.movieRepository.findByPk(id, {
       include: { all: true },
     });
+
+    if (!movie) {
+      throw new Exception.NotFoundException('Movie');
+    }
 
     return movie;
   }

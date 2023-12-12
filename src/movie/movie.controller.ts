@@ -17,15 +17,24 @@ import { RolesGuard } from 'src/auth/roles.guard';
 import { UserParam } from 'src/auth/user.decorator';
 import { CreateReviewDto } from 'src/review/dto/create-review.dto';
 import { User } from 'src/user/user.model';
-import { CreateMovieDto } from './dto/create-movie.dto';
+import { CreateMovieDto, UpdateMovieDto } from './dto/create-movie.dto';
 import { MovieService } from './movie.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
+import { ApiConsumes, ApiHeader, ApiResponse } from '@nestjs/swagger';
 
 @Controller('movies')
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer-token authorization header',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'This is forbidden for non contributor users',
+  })
   @Roles('CONTRIBUTOR')
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('poster'))
@@ -37,18 +46,43 @@ export class MovieController {
     return this.movieService.createMovie(movie, poster);
   }
 
+  @ApiConsumes('multipart/form-data')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer-token authorization header',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'This is forbidden for non contributor users',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Movie with this id was not found',
+  })
   @Roles('CONTRIBUTOR')
   @UseGuards(RolesGuard)
   @UseInterceptors(FileInterceptor('poster'))
   @Patch('/:id')
   update(
     @Param('id') id: number,
-    @Body() movie: Partial<CreateMovieDto>,
+    @Body() movie: UpdateMovieDto,
     @UploadedFile() poster?: Express.Multer.File,
   ) {
     return this.movieService.updateMovie(id, movie, poster);
   }
 
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer-token authorization header',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'This is forbidden for non contributor users',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Movie with this id was not found',
+  })
   @Roles('CONTRIBUTOR')
   @UseGuards(RolesGuard)
   @Delete('/:id')
@@ -66,8 +100,20 @@ export class MovieController {
     return this.movieService.getMovieById(id);
   }
 
-  @Post('/:id/reviews')
+  @ApiHeader({
+    name: 'Authorization',
+    description: 'Bearer-token authorization header',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'This is forbidden for not authorized users',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Movie with this id was not found',
+  })
   @UseGuards(AuthGuard)
+  @Post('/:id/reviews')
   addReview(
     @Param('id') id: number,
     @UserParam() user: User,

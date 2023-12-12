@@ -66,7 +66,9 @@ export class AuthService {
   }
 
   validateAuthHeader(authHeader: string) {
-    if (!authHeader) return null;
+    if (!authHeader) {
+      throw new UnauthorizedException({ message: 'User is unauthorized' });
+    }
 
     const [bearer, token] = authHeader.split(' ');
 
