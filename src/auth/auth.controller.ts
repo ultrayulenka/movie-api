@@ -5,7 +5,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { AuthGuard } from './auth.guard';
 import { UserParam } from './user.decorator';
 import { User } from 'src/user/user.model';
-import { ApiHeader, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { AuthResponse, UserData } from 'src/schemas';
 
 @Controller('auth')
@@ -45,10 +45,7 @@ export class AuthController {
   }
 
   @Get()
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
     description: 'Token is valid, user data is returned',

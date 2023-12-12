@@ -21,16 +21,13 @@ import { CreateMovieDto, UpdateMovieDto } from './dto/create-movie.dto';
 import { MovieService } from './movie.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Express } from 'express';
-import { ApiConsumes, ApiHeader, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 
 @Controller('movies')
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 403,
     description: 'This is forbidden for non contributor users',
@@ -47,10 +44,7 @@ export class MovieController {
   }
 
   @ApiConsumes('multipart/form-data')
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 403,
     description: 'This is forbidden for non contributor users',
@@ -71,10 +65,7 @@ export class MovieController {
     return this.movieService.updateMovie(id, movie, poster);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 403,
     description: 'This is forbidden for non contributor users',
@@ -100,10 +91,7 @@ export class MovieController {
     return this.movieService.getMovieById(id);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 401,
     description: 'This is forbidden for not authorized users',

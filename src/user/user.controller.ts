@@ -12,17 +12,14 @@ import { CreateRoleDto } from 'src/roles/dto/create-role.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UserService } from './user.service';
 import { Roles } from 'src/auth/roles-auth.decorator';
-import { ApiHeader, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
 import { UserData } from 'src/schemas';
 
 @Controller('users')
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 403,
     description: 'This is forbidden for non admin users',
@@ -34,10 +31,7 @@ export class UserController {
     return this.userService.createUser(user);
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
     description: 'All users are returned',
@@ -54,10 +48,7 @@ export class UserController {
     return this.userService.getAllUsers();
   }
 
-  @ApiHeader({
-    name: 'Authorization',
-    description: 'Bearer-token authorization header',
-  })
+  @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 200,
     description: 'User is updated',
