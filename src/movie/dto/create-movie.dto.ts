@@ -1,8 +1,6 @@
 import { ApiPropertyOptional, PartialType } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, IsInt, Min, Max } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 import { Express } from 'express';
-
-const currentYear = new Date().getFullYear();
 
 export class CreateMovieDto {
   @IsString()
@@ -13,9 +11,6 @@ export class CreateMovieDto {
   @IsNotEmpty()
   readonly description: string;
 
-  @IsInt()
-  @Min(0)
-  @Max(currentYear)
   readonly year: number;
 
   @IsString()

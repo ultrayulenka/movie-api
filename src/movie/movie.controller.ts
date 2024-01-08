@@ -27,6 +27,7 @@ import { ApiBearerAuth, ApiConsumes, ApiResponse } from '@nestjs/swagger';
 export class MovieController {
   constructor(private movieService: MovieService) {}
 
+  @ApiConsumes('multipart/form-data')
   @ApiBearerAuth('access-token')
   @ApiResponse({
     status: 403,
