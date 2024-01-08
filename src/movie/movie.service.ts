@@ -18,7 +18,8 @@ export class MovieService {
   ) {}
 
   async createMovie(dto: CreateMovieDto, poster: any) {
-    const dtoWithRating = { ...dto, rating: 0, year: Number(dto.year) };
+    const year = Number.isNaN(Number(dto.year)) ? 0 : Number(dto.year);
+    const dtoWithRating = { ...dto, rating: 0, year };
     const posterFileName = await this.getPosterFileName(poster);
     const movie = await this.movieRepository.create({
       ...dtoWithRating,
