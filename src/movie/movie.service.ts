@@ -18,7 +18,7 @@ export class MovieService {
   ) {}
 
   async createMovie(dto: CreateMovieDto, poster: any) {
-    const dtoWithRating = { ...dto, rating: 0 };
+    const dtoWithRating = { ...dto, rating: 0, year: Number(dto.year) };
     const posterFileName = await this.getPosterFileName(poster);
     const movie = await this.movieRepository.create({
       ...dtoWithRating,
